@@ -1,4 +1,4 @@
-/* =============================================================
+﻿/* =============================================================
 	INTRODUCTION TO GAME PROGRAMMING SE102
 	
 	SAMPLE 04 - COLLISION
@@ -30,6 +30,7 @@
 #include "Mario.h"
 #include "Brick.h"
 #include "Goomba.h"
+#include "SpatialGrid.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
@@ -60,12 +61,13 @@ class CSampleKeyHander: public CKeyEventHandler
 
 CSampleKeyHander * keyHandler; 
 
+//Nhấn thả
 void CSampleKeyHander::OnKeyDown(int KeyCode)
 {
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	switch (KeyCode)
 	{
-	case DIK_SPACE:
+	case DIK_SPACE: // jump
 		mario->SetState(MARIO_STATE_JUMP);
 		break;
 	case DIK_A: // reset
@@ -82,6 +84,7 @@ void CSampleKeyHander::OnKeyUp(int KeyCode)
 	DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
 }
 
+//Nhấn giữ
 void CSampleKeyHander::KeyState(BYTE *states)
 {
 	// disable control key when Mario die 
@@ -130,7 +133,7 @@ void LoadResources()
 	
 	LPDIRECT3DTEXTURE9 texMario = textures->Get(ID_TEX_MARIO);
 
-	// big
+	// Mario big
 	sprites->Add(10001, 246, 154, 260, 181, texMario);		// idle right
 
 	sprites->Add(10002, 275, 154, 290, 181, texMario);		// walk
@@ -142,7 +145,7 @@ void LoadResources()
 
 	sprites->Add(10099, 215, 120, 231, 135, texMario);		// die 
 
-	// small
+	// Mario small
 	sprites->Add(10021, 247, 0, 259, 15, texMario);			// idle small right
 	sprites->Add(10022, 275, 0, 291, 15, texMario);			// walk 
 	sprites->Add(10023, 306, 0, 320, 15, texMario);			// 
@@ -152,16 +155,18 @@ void LoadResources()
 	sprites->Add(10032, 155, 0, 170, 15, texMario);			// walk
 	sprites->Add(10033, 125, 0, 139, 15, texMario);			// 
 
-
+	// Platform
 	LPDIRECT3DTEXTURE9 texMisc = textures->Get(ID_TEX_MISC);
 	sprites->Add(20001, 408, 225, 424, 241, texMisc);
 
+	// Enemy
 	LPDIRECT3DTEXTURE9 texEnemy = textures->Get(ID_TEX_ENEMY);
 	sprites->Add(30001, 5, 14, 21, 29, texEnemy);
 	sprites->Add(30002, 25, 14, 41, 29, texEnemy);
 
 	sprites->Add(30003, 45, 21, 61, 29, texEnemy); // die sprite
-
+	
+	//--------------------------Animation---------------------------
 	LPANIMATION ani;
 
 	ani = new CAnimation(100);	// idle big right
@@ -210,7 +215,6 @@ void LoadResources()
 	animations->Add(599, ani);
 
 	
-
 	ani = new CAnimation(100);		// brick
 	ani->Add(20001);
 	animations->Add(601, ani);
@@ -275,6 +279,8 @@ void LoadResources()
 		goomba->AddAnimation(702);
 		goomba->SetPosition(200 + i*60, 135);
 		goomba->SetState(GOOMBA_STATE_WALKING);
+		goomba->SetName("Goomba");
+		goomba->SetID(i);
 		objects.push_back(goomba);
 	}
 
@@ -289,12 +295,19 @@ void Update(DWORD dt)
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
-	vector<LPGAMEOBJECT> coObjects;
+	vector<LPGAMEOBJECT> coObjects; //Vector chứa các Object va chạm (trừ index 0 vì là Mario)
 	for (int i = 1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
 
+	//Grid
+	SpatialGrid* grid = SpatialGrid::GetInstance();
+	grid->Clear();
+	for (unsigned i = 0; i < coObjects.size(); i++)
+		grid->Insert(coObjects[i]);
+
+	//Update objects
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt,&coObjects);
@@ -309,6 +322,7 @@ void Update(DWORD dt)
 	cy -= SCREEN_HEIGHT / 2;
 
 	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	//CGame::GetInstance()->SetCamPos(cx, cy);
 }
 
 /*

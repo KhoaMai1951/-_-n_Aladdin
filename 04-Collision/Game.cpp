@@ -1,4 +1,4 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include "debug.h"
 
 CGame * CGame::__instance = NULL;
@@ -205,8 +205,12 @@ CGame::~CGame()
 	SweptAABB 
 */
 void CGame::SweptAABB(
+	/* tọa độ (x,y) của góc trên cùng bên trái và góc dưới cùng bên phải 
+	của boundingbox moving object */
 	float ml, float mt,	float mr, float mb,			
-	float dx, float dy,			
+	float dx, float dy,
+	/* tọa độ (x,y) của góc trên cùng bên trái và góc dưới cùng bên phải
+	của boundingbox static object */
 	float sl, float st, float sr, float sb,
 	float &t, float &nx, float &ny)
 {

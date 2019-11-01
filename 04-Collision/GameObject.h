@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <Windows.h>
 #include <d3dx9.h>
@@ -15,12 +15,14 @@ class CGameObject;
 typedef CGameObject * LPGAMEOBJECT;
 
 struct CCollisionEvent;
-typedef CCollisionEvent * LPCOLLISIONEVENT;
+typedef CCollisionEvent* LPCOLLISIONEVENT;
+
 struct CCollisionEvent
 {
-	LPGAMEOBJECT obj;
+	LPGAMEOBJECT obj;	//Member obj thuộc CGameObject
 	float t, nx, ny;
-	CCollisionEvent(float t, float nx, float ny, LPGAMEOBJECT obj = NULL) { this->t = t; this->nx = nx; this->ny = ny; this->obj = obj; }
+	CCollisionEvent(float t, float nx, float ny, LPGAMEOBJECT obj = NULL) 
+		{ this->t = t; this->nx = nx; this->ny = ny; this->obj = obj; }
 
 	static bool compare(const LPCOLLISIONEVENT &a, LPCOLLISIONEVENT &b)
 	{
@@ -29,10 +31,11 @@ struct CCollisionEvent
 };
 
 
-
 class CGameObject
 {
 public:
+	string name;
+	int id;
 
 	float x; 
 	float y;
@@ -62,7 +65,8 @@ public:
 	void RenderBoundingBox();
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
-	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
+	//void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
+	void CalcPotentialCollisions(vector<CGameObject*> coObjects, vector<LPCOLLISIONEVENT>& coEvents);
 	void FilterCollision(
 		vector<LPCOLLISIONEVENT> &coEvents, 
 		vector<LPCOLLISIONEVENT> &coEventsResult, 
@@ -79,7 +83,9 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
 	virtual void Render() = 0;
 	virtual void SetState(int state) { this->state = state; }
-
+	//test
+	virtual void SetName(string name) { this->name = name; }
+	virtual void SetID(int id) { this->id = id; }
 
 	~CGameObject();
 };

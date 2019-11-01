@@ -62,13 +62,18 @@ LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 	coObjects: the list of colliable objects
 	coEvents: list of potential collisions
 */
+//void CGameObject::CalcPotentialCollisions(
+//	vector<LPGAMEOBJECT> *coObjects, 
+//	vector<LPCOLLISIONEVENT> &coEvents)
 void CGameObject::CalcPotentialCollisions(
-	vector<LPGAMEOBJECT> *coObjects, 
-	vector<LPCOLLISIONEVENT> &coEvents)
+	vector<CGameObject*> coObjects,
+	vector<LPCOLLISIONEVENT>& coEvents)
 {
-	for (UINT i = 0; i < coObjects->size(); i++)
+	//for (UINT i = 0; i < coObjects->size(); i++)
+	for (UINT i = 0; i < coObjects.size(); i++)
 	{
-		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		//LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		LPCOLLISIONEVENT e = SweptAABBEx(coObjects.at(i));
 
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);

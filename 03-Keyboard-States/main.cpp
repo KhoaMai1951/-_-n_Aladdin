@@ -1,4 +1,4 @@
-/* =============================================================
+﻿/* =============================================================
 	INTRODUCTION TO GAME PROGRAMMING SE102
 	
 	SAMPLE 03 - KEYBOARD AND OBJECT STATE
@@ -24,7 +24,7 @@
 #define MAIN_WINDOW_TITLE L"02 - Sprite animation"
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(200, 200, 255)
-#define SCREEN_WIDTH 320
+#define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 240
 
 #define MAX_FRAME_RATE 90
@@ -36,6 +36,7 @@
 CGame *game;
 CMario *mario;
 
+// Khởi tạo Lớp CSampleKeyHander kế thừa lớp CKeyEventHandler từ Game.h
 class CSampleKeyHander: public CKeyEventHandler
 {
 	virtual void KeyState(BYTE *states);
@@ -45,6 +46,7 @@ class CSampleKeyHander: public CKeyEventHandler
 
 CSampleKeyHander * keyHandler; 
 
+//Nhấn 1 lần
 void CSampleKeyHander::OnKeyDown(int KeyCode)
 {
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
@@ -56,11 +58,13 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 	}
 }
 
+
 void CSampleKeyHander::OnKeyUp(int KeyCode)
 {
 	DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
 }
 
+//Nhấn lâu
 void CSampleKeyHander::KeyState(BYTE *states)
 {
 	if (game->IsKeyDown(DIK_RIGHT))

@@ -58,9 +58,9 @@ public:
 		float dx,			// 
 		float dy,			// 
 		float sl,			// static left
-		float st, 
-		float sr, 
-		float sb,
+		float st,			// static top					
+		float sr,			// static right
+		float sb,			// static bottom
 		float &t, 
 		float &nx, 
 		float &ny);
