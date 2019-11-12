@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "ViewPort.h"
 
 #define MARIO_WALKING_SPEED		0.1f 
 //0.1f
@@ -40,12 +41,14 @@
 
 class CMario : public CGameObject
 {
+	ViewPort* camera = NULL;
 	int level;
 	int untouchable;
 	DWORD untouchable_start;
 public: 
 	CMario() : CGameObject()
 	{
+		camera = ViewPort::getInstance();
 		level = MARIO_LEVEL_BIG;
 		untouchable = 0;
 	}

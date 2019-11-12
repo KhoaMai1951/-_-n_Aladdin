@@ -30,7 +30,9 @@
 #include "Mario.h"
 #include "Brick.h"
 #include "Goomba.h"
+#include "Map.h"
 #include "SpatialGrid.h"
+#include "ResourceLoader.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
@@ -44,6 +46,7 @@
 #define ID_TEX_MARIO 0
 #define ID_TEX_ENEMY 10
 #define ID_TEX_MISC 20
+#define ID_TEX_MAP 30
 
 CGame *game;
 
@@ -51,6 +54,7 @@ CMario *mario;
 CGoomba *goomba;
 
 vector<LPGAMEOBJECT> objects;
+vector<LPGAMEOBJECT> map_vector;
 
 class CSampleKeyHander: public CKeyEventHandler
 {
@@ -124,9 +128,10 @@ void LoadResources()
 	textures->Add(ID_TEX_MISC, L"textures\\misc.png", D3DCOLOR_XRGB(176, 224, 248));
 	textures->Add(ID_TEX_ENEMY, L"textures\\enemies.png", D3DCOLOR_XRGB(3, 26, 110));
 
+	textures->Add(ID_TEX_MAP, L"textures\\Sultans Dungeon_Back - Copy.png", D3DCOLOR_XRGB(255, 255, 255));
 
 	textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
-
+	
 
 	CSprites * sprites = CSprites::GetInstance();
 	CAnimations * animations = CAnimations::GetInstance();
@@ -241,9 +246,18 @@ void LoadResources()
 
 	mario->AddAnimation(599);		// die
 
+	//add map
+	LPDIRECT3DTEXTURE9 texMap = textures->Get(ID_TEX_MAP);
+	ResourceLoader::GetInstance()->LoadMapFromFile("Map_Background.txt", texMap, map_vector);
+
 	mario->SetPosition(50.0f, 0);
 	objects.push_back(mario);
 
+
+
+	ResourceLoader::GetInstance()->LoadObjectFromFile("test2.txt", objects);
+#pragma region
+	/*
 	for (int i = 0; i < 5; i++)
 	{
 		CBrick *brick = new CBrick();
@@ -283,7 +297,8 @@ void LoadResources()
 		goomba->SetID(i);
 		objects.push_back(goomba);
 	}
-
+	*/
+#pragma endregion
 }
 
 /*
@@ -313,15 +328,21 @@ void Update(DWORD dt)
 		objects[i]->Update(dt,&coObjects);
 	}
 
+	D3DXVECTOR2 posWorld;
+	posWorld = ViewPort::getInstance()->getPositionWorld();
+	float l = posWorld.x;
+	float t = posWorld.y;
+	float r = ViewPort::getInstance()->getWidth() + l;
+	float b = ViewPort::getInstance()->getHeight() + t;
 
-	// Update camera to follow mario
-	float cx, cy;
-	mario->GetPosition(cx, cy);
+	//// Update camera to follow mario
+	//float cx, cy;
+	//mario->GetPosition(cx, cy);
 
-	cx -= SCREEN_WIDTH / 2;
-	cy -= SCREEN_HEIGHT / 2;
+	//cx -= SCREEN_WIDTH / 2;
+	//cy -= SCREEN_HEIGHT / 2;
 
-	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	//CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
 	//CGame::GetInstance()->SetCamPos(cx, cy);
 }
 
@@ -340,6 +361,9 @@ void Render()
 		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
+
+		for (int i = 0; i < map_vector.size(); i++)
+			map_vector[i]->Render();
 
 		for (int i = 0; i < objects.size(); i++)
 			objects[i]->Render();

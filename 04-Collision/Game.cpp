@@ -1,5 +1,6 @@
 ﻿#include "Game.h"
 #include "debug.h"
+#include"ViewPort.h"
 
 CGame * CGame::__instance = NULL;
 
@@ -60,7 +61,8 @@ void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top
 
 //D3DXVECTOR3 p(floor(x), floor(y), 0); // https://docs.microsoft.com/vi-vn/windows/desktop/direct3d9/directly-mapping-texels-to-pixels
 // Try removing floor() to see blurry Mario
-	D3DXVECTOR3 p(floor(x - cam_x), floor(y - cam_y), 0);
+	//D3DXVECTOR3 p(floor(x - cam_x), floor(y - cam_y), 0);
+	D3DXVECTOR3 p = ViewPort::getInstance()->getPositionInViewPort(new D3DXVECTOR3(x, y, 0));
 	RECT r; 
 	r.left = left;
 	r.top = top;
